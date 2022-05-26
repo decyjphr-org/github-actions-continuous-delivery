@@ -27,27 +27,27 @@ jobs:
                   repo,
                   pull_number: context.payload.pull_request.number
                 }
-                let res = {
-                    data: {
-                      name: ''
-                    }
-                }
-                try {
-                    res = await github.rest.pulls.get(params)
-                    if (res.mergeable === true) {
-                       console.log("This PR is mergeable")
-                    }
-                } catch (e) {
-                    if (e.status === 404) {
-                        const message404 = `No PR found for ${JSON.stringify(params)}`
-                        core.debug(message404)
-                        core.setOutput('status', message404)
-                        core.setFailed(`${message404}`)
-                        throw new Error(message404)
-                    }
-                    const message = `${e} fetching the PR with ${JSON.stringify(params)}`
-                    core.debug(message)
-                    core.setOutput('status', message)
-                    core.setFailed(`${message}`)
-                    throw new Error(message)
-                }
+            let res = {
+              data: {
+                name: ''
+              }
+            }
+            try {
+              res = await github.rest.pulls.get(params)
+              if (res.mergeable === true) {
+                 console.log("This PR is mergeable")
+              }
+            } catch (e) {
+              if (e.status === 404) {
+                const message404 = `No PR found for ${JSON.stringify(params)}`
+                core.debug(message404)
+                core.setOutput('status', message404)
+                core.setFailed(`${message404}`)
+                throw new Error(message404)
+              }
+              const message = `${e} fetching the PR with ${JSON.stringify(params)}`
+              core.debug(message)
+              core.setOutput('status', message)
+              core.setFailed(`${message}`)
+              throw new Error(message)
+            }
