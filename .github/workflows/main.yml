@@ -29,10 +29,10 @@ jobs:
                 }
             try {
               const res = await github.rest.pulls.get(params)
-              if (res.mergeable === true) {
+              if (res.data.mergeable === true) {
                  console.log("This PR is mergeable")
               } else {
-              console.log(`This PR is not mergeable ${JSON.stringify(res)}`)
+                console.log(`This PR is not mergeable ${JSON.stringify(res.data)}`)
               }
             } catch (e) {
               if (e.status === 404) {
