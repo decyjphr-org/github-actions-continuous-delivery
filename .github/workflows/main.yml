@@ -27,13 +27,8 @@ jobs:
                   repo,
                   pull_number: context.payload.pull_request.number
                 }
-            let res = {
-              data: {
-                name: ''
-              }
-            }
             try {
-              res = await github.rest.pulls.get(params)
+              const res = await github.rest.pulls.get(params)
               if (res.mergeable === true) {
                  console.log("This PR is mergeable")
               }
