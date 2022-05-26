@@ -35,4 +35,30 @@ jobs:
         with:
           GITHUB-TOKEN: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            console.log(context.payload.pullrequest)
+            console.log(github.event.pull_request.number)
+            const params = {
+                  org,
+                  repo,
+                  pull_number: github.event.pull_request.number
+                }
+                let res = {
+                    data: {
+                      name: ''
+                    }
+                }
+                try {
+                    res = await github.rest.pulls.get(params)
+                } catch (e) {
+                    if (e.status === 404) {
+                        const message404 = `No PR found for ${JSON.stringify(params)}`
+                        core.debug(message404)
+                        core.setOutput('status', message404)
+                        core.setFailed(`${message404}`)
+                        throw new Error(message404)
+                    }
+                    const message = `${e} fetching the team with ${JSON.stringify(params)}`
+                    core.debug(message)
+                    core.setOutput('status', message)
+                    core.setFailed(`${message}`)
+                    throw new Error(message)
+                }
