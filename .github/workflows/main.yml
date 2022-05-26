@@ -24,13 +24,6 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
       - name: Check if PR is mergeable 
         id: isMergeable
         uses: actions/github-script@v5
@@ -39,7 +32,7 @@ jobs:
           script: |
             const org = context.payload.organization.login
             const repo = context.payload.repository.name
-            console.log(JSON.stringify(context))
+            // console.log(JSON.stringify(context))
             const params = {
                   owner: org,
                   repo,
@@ -52,6 +45,7 @@ jobs:
                 }
                 try {
                     res = await github.rest.pulls.get(params)
+                    console.log(JSON.stringify(res))
                 } catch (e) {
                     if (e.status === 404) {
                         const message404 = `No PR found for ${JSON.stringify(params)}`
