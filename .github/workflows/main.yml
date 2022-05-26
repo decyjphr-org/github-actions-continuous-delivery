@@ -37,11 +37,11 @@ jobs:
           script: |
             const org = context.payload.organization.login
             const repo = context.payload.repository.name
-            console.log(JSON.stringify(github.event))
+            console.log(JSON.stringify(context.github.event))
             const params = {
                   org,
                   repo,
-                  pull_number: github.event.pull_request.number
+                  pull_number: context.github.event.pull_request.number
                 }
                 let res = {
                     data: {
