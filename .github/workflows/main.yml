@@ -35,6 +35,8 @@ jobs:
         with:
           GITHUB-TOKEN: ${{ secrets.GITHUB_TOKEN }}
           script: |
+            const org = context.payload.organization.login
+            const repo = context.payload.repository.name
             console.log(JSON.stringify(github.event))
             const params = {
                   org,
