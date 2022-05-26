@@ -33,6 +33,6 @@ jobs:
         id: isMergeable
         uses: actions/github-script@v5
         with:
-          github-token: ${{ secrets.PAT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           script: |
             console.log(context.payload.pullrequest)
