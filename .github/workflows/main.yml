@@ -41,7 +41,7 @@ jobs:
             const params = {
                   org,
                   repo,
-                  pull_number: context.pullrequest.number
+                  pull_number: context.payload.pull_request.number
                 }
                 let res = {
                     data: {
