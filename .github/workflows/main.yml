@@ -41,7 +41,7 @@ jobs:
             const repo = context.payload.repository.name
             console.log(JSON.stringify(context))
             const params = {
-                  org,
+                  owner: org,
                   repo,
                   pull_number: context.payload.pull_request.number
                 }
