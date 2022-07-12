@@ -1,0 +1,19 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: GH pages demo
+
+on:
+  workflow_dispatch:
+    
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ./.github/actions/publish-docker
+      with:
+        registry_username: ${{ secrets.registry_username }}
+        registry_password: ${{ secrets.registry_password }}
+        tag: yadhav/tic-tac-toe:latest
