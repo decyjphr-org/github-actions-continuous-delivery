@@ -1,12 +1,14 @@
-name: Create pre-release
+name: Stage CI, SAST, Release
 on:
-  pull_request:
-    types:
-    - 'opened'
-    - 'reopened'
-    - 'synchronized'
-    branches: 
-    - 'master'
+#   pull_request:
+#     types:
+#     - 'opened'
+#     - 'reopened'
+#     - 'synchronized'
+#     branches: 
+#     - 'master'
+  workflow_dispatch:
+    
     
 jobs:
   build:
