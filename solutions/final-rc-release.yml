@@ -1,0 +1,72 @@
+# Simple workflow for deploying static content to GitHub Pages
+name: RC Release 
+
+on:
+  # Runs on pushes targeting the default branch
+  #push:
+  #  branches: ["master"]
+  issue_comment:
+  
+# Allow one concurrent deployment
+concurrency:
+  group: "rcrelease"
+  cancel-in-progress: true
+
+jobs:
+  rcrelease:
+    name: release
+    runs-on: ubuntu-latest
+    if: ${{ github.event.issue.pull_request }}
+    outputs:
+      release: ${{ steps.rcrelease.outputs.release }}
+    steps:
+    - run: echo "${{ toJSON(github.event.issue.pull_request) }}"
+    
+    - uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.issue.pull_request.head_ref }}
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16.x
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm test -- -u
+    - uses: actions/upload-artifact@v3
+      with:
+        name: webpack artifacts
+        path: public/    
+    - name: Tag a rc release 
+      id: rcrelease
+      uses: actionsdesk/semver@0.6.0-rc.10
+      with:
+        prerelease: withBuildNumber
+        prelabel: rc
+        commitish: ${{ github.event.issue.pull_request.head_ref }}
+  
+  package:
+    needs: [rcrelease]
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+    - uses: actions/checkout@v3
+    - name: package to docker
+      uses: ./.github/actions/publish-docker
+      with:
+        docker_username: ${{ secrets.DOCKER_USERNAME }}
+        docker_password: ${{ secrets.DOCKER_PASSWORD }}
+        tag: yadhav/tic-tac-toe:${{needs.rcrelease.outputs.release}}
+
+  rcpublish:
+  # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    needs: [package]
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v3
